@@ -70,14 +70,13 @@ int main(int argc, const char *argv[])
         error("Can not open patchfile");
 
     // parse patchfile
-
-	if (!patchFile.eof())
-	{
-		std::string signature;
-		std::getline(patchFile, signature);
-		if (signature != SIGNATURE)
-			error("Invalid signature in patchfile");
-	}
+    if (!patchFile.eof())
+    {
+        std::string signature;
+        std::getline(patchFile, signature);
+        if (signature != SIGNATURE)
+            error("Invalid signature in patchfile");
+    }
 
     std::map<size_t, TBytes> diffData;
     while (!patchFile.eof())
@@ -125,8 +124,8 @@ int main(int argc, const char *argv[])
         if (newFile.fail())
             error("Error patching newfile");
         newFile.write((const char *)bytes.data(), bytes.size());
-		if (newFile.bad())
-			error("Error writing to newfile");
+        if (newFile.bad())
+            error("Error writing to newfile");
     }
 
     return EXIT_SUCCESS;

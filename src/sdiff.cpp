@@ -65,7 +65,7 @@ int main(int argc, const char *argv[])
     patchFile << std::setbase(16) << std::setfill('0');
 
     // init
-	patchFile << SIGNATURE << std::endl;
+    patchFile << SIGNATURE << std::endl;
 #ifdef _WIN32
     unsigned __int64 fileSize = static_cast<unsigned __int64>(oldFileSize);
 #else
@@ -79,10 +79,12 @@ int main(int argc, const char *argv[])
     while (oldFile.good() && newFile.good())
     {
         b1 = oldFile.get();
-        if (oldFile.fail())
+        if (oldFile.bad())
             error("Error reading from oldfile");
+		if (oldFile.eof())
+			break;
         b2 = newFile.get();
-        if (newFile.fail())
+        if (newFile.bad())
             error("Error reading from newfile");
         if (b1 == b2)
         {
