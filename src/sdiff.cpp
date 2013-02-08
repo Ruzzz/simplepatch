@@ -81,8 +81,8 @@ int main(int argc, const char *argv[])
         b1 = oldFile.get();
         if (oldFile.bad())
             error("Error reading from oldfile");
-		if (oldFile.eof())
-			break;
+        if (oldFile.eof())
+            break;
         b2 = newFile.get();
         if (newFile.bad())
             error("Error reading from newfile");

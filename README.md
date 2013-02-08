@@ -3,7 +3,7 @@ spatch
 
 Simple diff and patch command line utilities
 
-## Format of diff-file. ##
+## Format of *.sdiff file. ##
 
 Its text file. All numbers is hex. Lines:
 
