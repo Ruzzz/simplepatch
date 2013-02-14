@@ -1,11 +1,11 @@
 spatch
 ======
 
-Simple diff and patch command line utilities
+Simple diff and patch command line utilities for files with the same size.
 
 ## Format of *.sdiff file. ##
 
-Its text file. All numbers is hex. Lines:
+Text file, all numbers is hex:
 
 - `SIMPLEDIFF`
 - `offset byte ...`
