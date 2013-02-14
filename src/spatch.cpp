@@ -106,6 +106,8 @@ int main(int argc, const char *argv[])
         {
             unsigned int b = 0;
             lineStream >> std::hex >> b;
+            if (b > 0xff)
+                error("Invalid byte value in patchfile");
             bytes.push_back(static_cast<unsigned char>(b));
             lineStream >> std::ws;
         }
