@@ -3,7 +3,7 @@ spatch
 
 Simple diff and patch command line utilities for files with the same size.
 
-## Format of *.sdiff(*.simplediff) file. ##
+## Format of \*.sdiff(\*.simplediff) file. ##
 
 Text file, all numbers - hex:
 
