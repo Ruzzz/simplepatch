@@ -4,131 +4,69 @@
  *  Author:  Ruzzz ruzzzua[]gmail.com
  */
 
+#include <iostream>
+#include "defs.h"
+#include "Patch.h"
 #ifdef _WIN32
-#define _UNICODE
-#define UNICODE
+#include <windows.h>
 #endif
 
-#include <cstdlib>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <vector>
-#include <map>
 
-typedef std::vector<unsigned char> TBytes;
+#define VERSION "0.2"
+#define EXIT_ERROR(msg) { std::cerr << msg << std::endl; return 1; }
 
-const char *SIGNATURE = "SIMPLEDIFF";
-char HELP[] =
+const char HELP[] =
 {
-    "Copy oldfile to newfile and apply patchfile.\n"
-    "Usage: spatch oldfile newfile patchfile\n"
+    "Simple Patch v"VERSION" by Ruzzz\n"
+    "Apply simple patch file to target file.\n"
+    "Usage: spatch targetfile patchfile[.sdiff|.simplediff] [-nobackup]\n"
 };
 
-void error(const char *msg)
-{
-    std::cerr << msg << std::endl;
-    exit(EXIT_FAILURE);
-}
-
-#ifdef _WIN32
-int wmain(int argc, const wchar_t *argv[])
+#ifndef _tcscmp
+#ifdef _UNICODE
+#define _tcscmp wcscmp
 #else
-int main(int argc, const char *argv[])
+#define _tcscmp strcmp
 #endif
+#endif
+
+int _tmain(int argc, const tchar *argv[])
 {
-    if (argc < 4)
+    bool doBackup = true;
+    if (argc != 3 && (argc != 4 || (doBackup = _tcscmp(argv[3], _T("-nobackup")) != 0)))
     {
         std::cout << HELP;
-        return EXIT_FAILURE;
+        return 1;
     }
 
-    // oldfile
-    std::ifstream oldFile(argv[1], std::ios::in | std::ios::ate | std::ios::binary);
-    if (oldFile.fail())
-        error("Can not open oldfile");
-    size_t oldFileSize = static_cast<size_t>(oldFile.tellg());
-    if (oldFileSize == 0)
-        error("oldfile is empty");
-    oldFile.seekg(0);
-
-    // newfile
-    std::fstream newFile(argv[2], std::ios::in | std::ios::out | std::ios::trunc | std::ios::binary);
-    if (newFile.fail())
-        error("Can not create newfile");
-
-    // clone file
-    newFile << oldFile.rdbuf();
-    if (oldFile.fail() || newFile.fail())
-        error("Can not copy oldfile to newfile");
-    oldFile.close();
-
-    // patchfile
-    std::ifstream patchFile(argv[3], std::ios::in);
-    if (patchFile.fail())
-        error("Can not open patchfile");
-
-    // parse patchfile
-    if (!patchFile.eof())
+    // create backup
+    if (doBackup)
     {
-        std::string signature;
-        std::getline(patchFile, signature);
-        if (signature != SIGNATURE)
-            error("Invalid signature in patchfile");
+        tstring backupFileName(argv[1]);
+        backupFileName += _T(".original");
+#ifdef _WIN32
+        if (!::CopyFileW(argv[1], backupFileName.c_str(), FALSE))
+            EXIT_ERROR("Can not create backup file")
+#else
+        // TODO
+#endif
     }
 
-    std::map<size_t, TBytes> diffData;
-    while (!patchFile.eof())
+    // open file
+      // TODO Move to class Patch, but see 'size' below
+    std::fstream targetFile(argv[1], std::ios::in | std::ios::out | std::ios::ate | std::ios::binary);
+    if (!targetFile)
+        EXIT_ERROR("Can not open target file")
+    const auto size = targetFile.tellg();
+    if (!size)
+        EXIT_ERROR("Target file is empty")
+    else
     {
-        // read full line
-        std::string line;
-        std::getline(patchFile, line);
-
-        // skip empty lines
-        if (line.empty())
-            continue;
-        std::istringstream lineStream(line);
-        lineStream >> std::ws;
-        if (lineStream.eof())
-            continue;
-
-        // offset
-        size_t offset = 0;
-        lineStream >> std::hex >> offset;
-        if (offset >= oldFileSize)
-            error("Invalid offset in patchfile");
-
-        // bytes
-        TBytes bytes;
-        lineStream >> std::ws;
-        while (!lineStream.eof())
-        {
-            unsigned int b = 0;
-            lineStream >> std::hex >> b;
-            if (b > 0xff)
-                error("Invalid byte value in patchfile");
-            bytes.push_back(static_cast<unsigned char>(b));
-            lineStream >> std::ws;
-        }
-        if (bytes.size() > 0)  // TODO Print error?
-            diffData[offset] = bytes;  // TODO Check exists
+        // apply patch
+        Patch patch;
+        if (!(patch.parse(argv[2], static_cast<size_t>(size)) && patch.apply(targetFile)))
+            EXIT_ERROR(patch.getLastError().toString());
     }
 
-    // apply
-    const auto last = diffData.cend();
-    auto it = diffData.cbegin();
-    for (; it != last; ++it)
-    {
-        size_t offset = it->first;
-        TBytes bytes = it->second;
-        newFile.seekg(offset);
-        if (newFile.fail())
-            error("Error patching newfile");
-        newFile.write((const char *)bytes.data(), bytes.size());
-        if (newFile.bad())
-            error("Error writing to newfile");
-    }
-
-    return EXIT_SUCCESS;
+    return 0;
 }
