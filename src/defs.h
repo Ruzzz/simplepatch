@@ -1,12 +1,5 @@
 #pragma once
 
-/*
-#ifdef _WIN32
-#define _UNICODE
-#define UNICODE
-#endif
-*/
-
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
 
 #ifndef _T

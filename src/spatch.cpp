@@ -30,6 +30,16 @@ const char HELP[] =
 #endif
 #endif
 
+bool copyFile(const tchar *from, const tchar *to)
+{
+#ifdef _WIN32
+    return ::CopyFileW(from, to, FALSE) != FALSE;
+#else
+    return false;
+#endif
+
+}
+
 int _tmain(int argc, const tchar *argv[])
 {
     bool doBackup = true;
@@ -38,35 +48,21 @@ int _tmain(int argc, const tchar *argv[])
         std::cout << HELP;
         return 1;
     }
-
-    // create backup
-    if (doBackup)
-    {
-        tstring backupFileName(argv[1]);
-        backupFileName += _T(".original");
-#ifdef _WIN32
-        if (!::CopyFileW(argv[1], backupFileName.c_str(), FALSE))
-            EXIT_ERROR("Can not create backup file")
-#else
-        // TODO
-#endif
-    }
-
-    // open file
-      // TODO Move to class Patch, but see 'size' below
-    std::fstream targetFile(argv[1], std::ios::in | std::ios::out | std::ios::ate | std::ios::binary);
-    if (!targetFile)
-        EXIT_ERROR("Can not open target file")
-    const auto size = targetFile.tellg();
-    if (!size)
-        EXIT_ERROR("Target file is empty")
     else
     {
+        // create backup
+        if (doBackup)
+        {
+            tstring backupFileName(argv[1]);
+            backupFileName += _T(".original");
+            if (!copyFile(argv[1], backupFileName.c_str()))
+                EXIT_ERROR("Can not create backup file")
+        }
+
         // apply patch
         Patch patch;
-        if (!(patch.parse(argv[2], static_cast<size_t>(size)) && patch.apply(targetFile)))
-            EXIT_ERROR(patch.getLastError().toString());
+        if (!(patch.load(argv[2]) && patch.apply(argv[1])))
+            EXIT_ERROR(patch.getLastError().toString())
     }
-
     return 0;
 }

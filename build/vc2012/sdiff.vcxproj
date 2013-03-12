@@ -18,6 +18,7 @@
     <ClInclude Include="..\..\src\Crc32.h" />
     <ClInclude Include="..\..\src\defs.h" />
     <ClInclude Include="..\..\src\Patch.h" />
+    <ClInclude Include="..\..\src\string_utils.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{40EE09A8-188A-47BA-9B39-32C7E132FD3A}</ProjectGuid>

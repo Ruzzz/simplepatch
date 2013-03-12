@@ -8,35 +8,30 @@
 #include "defs.h"
 #include "Patch.h"
 
-#define VERSION "0.2"
-#define EXIT_ERROR(msg) { std::cerr << msg << std::endl; return 1; }
-
 const char HELP[] =
 {
-    "Simple Diff v"VERSION" by Ruzzz\n"
+    "Simple Diff v0.2 by Ruzzz\n"
     "Create simple patch file.\n"
     "Usage: sdiff oldfile newfile patchfile\n"
     "\n"
     "Note: oldfile and newfile must have the same size.\n"
 };
 
-#ifdef _WIN32
-typedef unsigned __int64 uint64_t;
-#endif
-
 int _tmain(int argc, const tchar *argv[])
 {
     if (argc != 4)
     {
         std::cout << HELP;
-        return EXIT_FAILURE;
+        return 1;
     }
     else
     {
-        // create patch
         Patch patch;
-        if (!(patch.create(argv[1], argv[2]) && patch.save(argv[3])))
-            EXIT_ERROR(patch.getLastError().toString())
+        if (!(patch.compare(argv[1], argv[2]) && patch.save(argv[3])))
+        {
+            std::cerr << patch.getLastError().toString() << std::endl;
+            return 1;
+        }
     }
     return 0;
 }
