@@ -132,9 +132,9 @@ const char *Patch::Error::toString() const
 const char *Patch::SIGNATURE = "SIMPLEDIFF";
 const tchar *const Patch::PATCH_FILE_EXTS[] = 
 {
-    _T(""),
     _T(".sdiff"),
-    _T(".simplediff")
+    _T(".simplediff"),
+    _T("")
 };
 
 bool Patch::calcCrc32(std::istream &f, unsigned int &result)

@@ -38,4 +38,4 @@ Example:
 
 ## Download ##
 
-[Win32 exe files](http://ge.tt/9jj1ara)
+[Win32 exe files](http://ge.tt/7Etqtra)
