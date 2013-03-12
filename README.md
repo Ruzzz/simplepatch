@@ -3,6 +3,11 @@ simple patch
 
 Simple diff and patch command line utilities for files with the same size.
 
+## Usage ##
+
+    sdiff oldfile newfile patchfile
+    spatch targetfile patchfile[.sdiff|.simplediff] [-nobackup]
+
 ## Format of \*.sdiff (\*.simplediff) file. ##
 
 Text file, all numbers - hexadecimal:
