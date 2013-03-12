@@ -269,7 +269,7 @@ bool Patch::parse_(std::istream &patchFile)
             p.ss.setf(std::ios::hex, std::ios::basefield);
             if (!p.getKey("CRC", fileCrc32_))
             {
-                lastError_ = Error::INVALID_SIZE;
+                lastError_ = Error::INVALID_CRC32;
                 return false;
             }
 

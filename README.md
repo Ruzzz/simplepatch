@@ -1,5 +1,5 @@
-spatch
-======
+simple patch
+============
 
 Simple diff and patch command line utilities for files with the same size.
 
@@ -31,3 +31,6 @@ Example:
     00F15D 30 00 00
     00F2AF 30
 
+## Download ##
+
+[Win32 exe files](http://ge.tt/9jj1ara)

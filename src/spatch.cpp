@@ -37,7 +37,6 @@ bool copyFile(const tchar *from, const tchar *to)
 #else
     return false;
 #endif
-
 }
 
 int _tmain(int argc, const tchar *argv[])
