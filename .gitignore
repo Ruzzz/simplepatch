@@ -147,15 +147,10 @@ $RECYCLE.BIN/
 # Mac crap
 .DS_Store
 
-# PVS Studio
-*.plog
-
 # MY
-
 bin
-test
+deploy
 test0
 *_Debug
 *_Release
-files
-deploy
+*.plog

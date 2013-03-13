@@ -61,7 +61,8 @@ public:
 
     template <typename T>
     bool getKey(const char *key, T &value)
-        /// Parse string 'KEY VALUE'
+        /// Parse string 'KEY VALUE'. If VALUE is empty then value = 0.
+        /// If key == KEY and VALUE is valid decimal number or empty then return true.
     {
         if (updateLine())
         { 
@@ -70,9 +71,15 @@ public:
             StringUtils::upperCaseInPlace(s);
             if (s == key)
             {
-                ss >> value;
-                if (ss.fail())
+                ss >> std::ws;
+                if (ss.eof())
                     value = 0;
+                else
+                {
+                    ss >> value;
+                    if (ss.fail())
+                        return false;
+                }
                 return true;
             }
         }
@@ -132,9 +139,9 @@ const char *Patch::Error::toString() const
 const char *Patch::SIGNATURE = "SIMPLEDIFF";
 const tchar *const Patch::PATCH_FILE_EXTS[] = 
 {
+    _T(""),
     _T(".sdiff"),
-    _T(".simplediff"),
-    _T("")
+    _T(".simplediff")
 };
 
 bool Patch::calcCrc32(std::istream &f, unsigned int &result)
@@ -155,7 +162,8 @@ bool Patch::calcCrc32(std::istream &f, unsigned int &result)
                 return false;
             else
                 crc.compute((void *)buffer.data(), readed);
-        }
+        } else
+            break;
     }
     result = crc.value();
     return true;
@@ -255,8 +263,6 @@ bool Patch::parse_(std::istream &patchFile)
         }
         else
         {
-            std::string s;
-
             // size
             p.ss.setf(std::ios::dec, std::ios::basefield);
             if (!p.getKey("SIZE", fileSize_))
@@ -463,7 +469,12 @@ bool Patch::save_(std::ostream &patchFile)
     if (!patchFile)
         return false;
 
-    unsigned int offsetLen = (unsigned int)ceil(log((long double)fileSize_)/log(16));
+    size_t max = fileSize_;
+    if (!max)
+        for (auto it : diffData_)
+            if (it.first > max)
+                max = it.first;
+    unsigned int offsetLen = (unsigned int)ceil(log((long double)max)/log(16));
     offsetLen += offsetLen % 4;
 
     for (auto it : diffData_)
@@ -483,4 +494,23 @@ bool Patch::save_(std::ostream &patchFile)
 
     lastError_ = Error::OK;
     return true;
+}
+
+//
+//  ==
+//
+
+bool operator==(const Patch::Error &lhs, const Patch::Error &rhs)
+{
+    return lhs.code() == lhs.code();
+}
+
+bool operator==(const Patch::Error &lhs, const Patch::Error::Code &rhs)
+{
+    return lhs.code() == rhs;
+}
+
+bool operator==(const Patch::Error::Code &lhs, const Patch::Error &rhs)
+{
+    return lhs == rhs.code();
 }
