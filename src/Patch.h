@@ -66,10 +66,12 @@ public:
     bool save(const tchar *patchFileName);
     bool load(const tchar *patchFileName);
     bool compare(const tchar *oldFileName, const tchar *newFileName);
-    
+
+#ifndef GTEST
 private:
+#endif
     static bool calcCrc32(std::istream &f, unsigned int &result);
-    
+
     bool apply_(std::fstream &targetFile);
     bool save_(std::ostream &patchFile);
     bool parse_(std::istream &patchFile);
@@ -83,3 +85,7 @@ private:
     unsigned int fileCrc32_;
     Error lastError_;
 };
+
+bool operator==(const Patch::Error &lhs, const Patch::Error &rhs);
+bool operator==(const Patch::Error &lhs, const Patch::Error::Code &rhs);
+bool operator==(const Patch::Error::Code &lhs, const Patch::Error &rhs);
