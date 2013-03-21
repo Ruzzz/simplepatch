@@ -19,6 +19,62 @@ typedef unsigned __int64 uint64_t;
 #endif
 
 //
+//  DiffComputer helper
+//
+
+class DiffComputer
+{
+public:
+    DiffComputer(Patch::DiffData *diffData) :
+        offset_(0),
+        foundOffset_(0),
+        bytes_(),
+        data_(diffData)
+    {
+        data_->clear();
+    }
+
+    ~DiffComputer()
+    {
+        checkBytes();
+    }
+
+    void compare(unsigned char b1, unsigned char b2)
+    {
+        if (b1 == b2)
+            checkBytes();
+        else
+        {
+            if (bytes_.empty())
+                foundOffset_ = offset_;
+            bytes_.push_back(b2);
+        }
+        ++offset_;
+    }
+
+    size_t offset_;
+
+private:
+    DiffComputer();
+    DiffComputer(DiffComputer &);
+    void operator=(DiffComputer &);
+
+    void checkBytes()
+    {
+        if (!bytes_.empty())
+        {
+            Patch::Bytes b;
+            b.swap(bytes_);
+            (*data_)[foundOffset_] = b;
+        }
+    }
+
+    size_t foundOffset_;
+    Patch::Bytes bytes_;
+    Patch::DiffData *data_;
+};
+
+//
 //  Parser helper
 //
 
@@ -245,7 +301,7 @@ bool Patch::load(const tchar *patchFileName)
             return parse_(patchFile);
     }
 
-    lastError_ = Error(Error::CANNOT_OPEN_PATCH);
+    lastError_ = Error::CANNOT_OPEN_PATCH;
     return false;
 }
 
@@ -319,12 +375,12 @@ bool Patch::parse_(std::istream &patchFile)
                         }
                         bytes.push_back(static_cast<unsigned char>(b));
                     }
-                    if (bytes.size() > 0)
+                    if (!bytes.empty())
                         diffData_[offset] = bytes;
                 }
             }  // while
 
-            if (diffData_.size() == 0)
+            if (diffData_.empty())
             {
                 lastError_ = Error::EMPTY_PATCH;
                 return false;
@@ -366,7 +422,7 @@ bool Patch::compare_(std::istream &oldFile, std::istream &newFile)
     const auto newFileSize = newFile.tellg();
     if (oldFileSize != newFileSize)
     {
-        lastError_ = Error(Error::DIFFERENT_SIZE);
+        lastError_ = Error::DIFFERENT_SIZE;
         return false;
     }
 
@@ -375,60 +431,41 @@ bool Patch::compare_(std::istream &oldFile, std::istream &newFile)
     // init
     newFile.seekg(0);
     oldFile.seekg(0);
-
-    bool isDiffState = false;
-    Crc32 crc;
-    Bytes bytes;
-    size_t offset;
-    diffData_.clear();
+    std::ios::iostate prevStateOld = oldFile.exceptions();
+    std::ios::iostate prevStateNew = newFile.exceptions();
+    oldFile.exceptions(std::ios::badbit | std::ios::failbit);
+    newFile.exceptions(std::ios::badbit | std::ios::failbit);
+    lastError_ = Error::OK;
 
     // work
-    while (oldFile && newFile)
+    try
     {
-        unsigned int b1 = oldFile.get();  // TODO Optimize
-        if (oldFile.eof())
-            break;
+        Crc32 crc;
+        DiffComputer c(&diffData_);
+
+        std::istreambuf_iterator<char> oldStream(oldFile.rdbuf());
+        std::istreambuf_iterator<char> newStream(newFile.rdbuf());
+        std::istreambuf_iterator<char> end;
+
+        for (;oldStream != end && newStream != end; ++oldStream, ++newStream)
+        {
+            crc.compute(*oldStream);
+            c.compare(*oldStream, *newStream);
+        }
+
+        fileCrc32_ = crc.value();
+    }
+    catch (std::ios::failure /*&e*/)
+    {
         if (!oldFile)
-        {
             lastError_ = Error::CANNOT_READ_OLDFILE;
-            return false;
-        }
-
-        unsigned int b2 = newFile.get();
-        if (!newFile)
-        {
-            lastError_ = Error::CANNOT_READ_NEWFILE;
-            return false;
-        }
-
-        crc.compute(b1);
-        if (b1 == b2)
-        {
-            if (isDiffState)
-            {
-                isDiffState = false;
-                if (bytes.size() > 0)
-                    diffData_[offset] = bytes;
-            }
-        }
         else
-        {
-            if (!isDiffState)
-            {
-                isDiffState = true;
-                offset = static_cast<size_t>(newFile.tellg()) - 1;
-                bytes.clear();
-            }
-            bytes.push_back(b2);
-        }
+            lastError_ = Error::CANNOT_READ_NEWFILE;
     }
 
-    if (isDiffState && bytes.size() > 0)
-        diffData_[offset] = bytes;
-    fileCrc32_ = crc.value();
-
-    lastError_ = Error::OK;
-    return true;
+    oldFile.exceptions(prevStateOld);
+    newFile.exceptions(prevStateNew);
+    return lastError_ == Error::OK;
 }
 
 bool Patch::save(const tchar *patchFileName)
@@ -502,7 +539,7 @@ bool Patch::save_(std::ostream &patchFile)
 
 bool operator==(const Patch::Error &lhs, const Patch::Error &rhs)
 {
-    return lhs.code() == lhs.code();
+    return lhs.code() == rhs.code();
 }
 
 bool operator==(const Patch::Error &lhs, const Patch::Error::Code &rhs)

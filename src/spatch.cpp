@@ -11,8 +11,6 @@
 #include <windows.h>
 #endif
 
-
-#define VERSION "0.2"
 #define EXIT_ERROR(msg) { std::cerr << msg << std::endl; return 1; }
 
 const char HELP[] =

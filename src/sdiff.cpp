@@ -10,7 +10,7 @@
 
 const char HELP[] =
 {
-    "Simple Diff v0.2 by Ruzzz\n"
+    "Simple Diff v"VERSION" by Ruzzz\n"
     "Create simple patch file.\n"
     "Usage: sdiff oldfile newfile patchfile\n"
     "\n"

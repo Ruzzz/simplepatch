@@ -1,5 +1,7 @@
 #pragma once
 
+#define VERSION "0.3"
+
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
 
 #ifndef _T
