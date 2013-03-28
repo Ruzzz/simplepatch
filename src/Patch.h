@@ -1,7 +1,8 @@
-/*
- *  Date:    2013/03/03
- *  Author:  Ruzzz ruzzzua[]gmail.com
- */
+//
+// Project: Simple Patch
+// Date:    2013-03-03
+// Author:  Ruzzz <ruzzzua[]gmail.com>
+//
 
 #pragma once
 
@@ -11,9 +12,7 @@
 
 #include "defs.h"
 
-class Patch
-{
-public:
+namespace Patch {
 
     typedef std::vector<unsigned char> Bytes;
     typedef std::map<size_t, Bytes> DiffData;
@@ -60,32 +59,37 @@ public:
         Code code_;
     };
 
-    Patch() : fileSize_(0), fileCrc32_(0) {}
-    const Error &getLastError() const { return lastError_; }
-    bool apply(const tchar *targetFileName);
-    bool save(const tchar *patchFileName);
-    bool load(const tchar *patchFileName);
-    bool compare(const tchar *oldFileName, const tchar *newFileName);
+    class Patcher
+    {
+    public:
+        Patcher() : fileSize_(0), fileCrc32_(0) {}
+        const Error &getLastError() const { return lastError_; }
+        bool apply(const tchar *targetFileName);
+        bool save(const tchar *patchFileName);
+        bool load(const tchar *patchFileName);
+        bool compare(const tchar *oldFileName, const tchar *newFileName);
 
-#ifndef GTEST
-private:
+#ifndef TESTING
+    private:
 #endif
-    static bool calcCrc32(std::istream &f, unsigned int &result);
+        static bool calcCrc32(std::istream &f, unsigned int &result);
 
-    bool apply_(std::fstream &targetFile);
-    bool save_(std::ostream &patchFile);
-    bool parse_(std::istream &patchFile);
-    bool compare_(std::istream &oldFile, std::istream &newFile);
+        bool apply_(std::fstream &targetFile);
+        bool save_(std::ostream &patchFile);
+        bool parse_(std::istream &patchFile);
+        bool compare_(std::istream &oldFile, std::istream &newFile);
 
-    static const char *SIGNATURE;
-    static const tchar *const PATCH_FILE_EXTS[];
+        static const char *SIGNATURE;
+        static const tchar *const PATCH_FILE_EXTS[];
 
-    DiffData diffData_;
-    size_t fileSize_;
-    unsigned int fileCrc32_;
-    Error lastError_;
-};
+        DiffData diffData_;
+        size_t fileSize_;
+        unsigned int fileCrc32_;
+        Error lastError_;
+    };
 
-bool operator==(const Patch::Error &lhs, const Patch::Error &rhs);
-bool operator==(const Patch::Error &lhs, const Patch::Error::Code &rhs);
-bool operator==(const Patch::Error::Code &lhs, const Patch::Error &rhs);
+    bool operator==(const Error &lhs, const Error &rhs);
+    bool operator==(const Error &lhs, const Error::Code &rhs);
+    bool operator==(const Error::Code &lhs, const Error &rhs);
+
+}  // namespace Patch

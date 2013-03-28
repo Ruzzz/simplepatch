@@ -1,35 +1,35 @@
-/*
- *  Version: 1.0
- *  Date:    2013/02/08
- *  Author:  Ruzzz ruzzzua[]gmail.com
- */
+//
+// Project: Simple Patch
+// Date:    2013-02-08
+// Author:  Ruzzz <ruzzzua[]gmail.com>
+//
 
 #include <iostream>
 #include "defs.h"
 #include "Patch.h"
 
-const char HELP[] =
+const char USAGE[] =
 {
     "Simple Diff v"VERSION" by Ruzzz\n"
     "Create simple patch file.\n"
-    "Usage: sdiff oldfile newfile patchfile\n"
+    "Usage: sdiff old-file new-file patch-file\n"
     "\n"
-    "Note: oldfile and newfile must have the same size.\n"
+    "Note: old-file and new-file must have the same size.\n"
 };
 
 int _tmain(int argc, const tchar *argv[])
 {
     if (argc != 4)
     {
-        std::cout << HELP;
+        std::cout << USAGE;
         return 1;
     }
     else
     {
-        Patch patch;
-        if (!(patch.compare(argv[1], argv[2]) && patch.save(argv[3])))
+        Patch::Patcher patcher;
+        if (!(patcher.compare(argv[1], argv[2]) && patcher.save(argv[3])))
         {
-            std::cerr << patch.getLastError().toString() << std::endl;
+            std::cerr << patcher.getLastError().toString() << std::endl;
             return 1;
         }
     }

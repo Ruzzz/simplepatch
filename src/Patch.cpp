@@ -1,7 +1,8 @@
-/*
- *  Date:    2013/03/03
- *  Author:  Ruzzz ruzzzua[]gmail.com
- */
+//
+// Project: Simple Patch
+// Date:    2013-03-08
+// Author:  Ruzzz <ruzzzua[]gmail.com>
+//
 
 #include <sstream>
 #include <string>
@@ -12,15 +13,13 @@
 #include "defs.h"
 #include "Patch.h"
 #include "Crc32.h"
-#include "string_utils.h"
+#include "StringUtil.h"
 
 #ifdef _WIN32
 typedef unsigned __int64 uint64_t;
 #endif
 
-//
-//  DiffComputer helper
-//
+namespace {  // Helpers
 
 class DiffComputer
 {
@@ -74,22 +73,17 @@ private:
     Patch::DiffData *data_;
 };
 
-//
-//  Parser helper
-//
-
-class Parser
+class StreamParser
 {
 public:
-    Parser(std::istream *patchFile) :
-        file(patchFile), s(), ss()
+    StreamParser(std::istream *patchFile) : file(patchFile), s(), ss()
     {
         ss.setf(std::ios::skipws);
         ss.exceptions(std::ios::badbit);
     }
 
     bool reset()
-        /// if s is not empty then reinit ss
+        /// if s is not empty then reinitialize ss
     {
         if (!s.empty())
         {
@@ -108,7 +102,7 @@ public:
         std::getline(*file, s);
         if (!file->fail())
         {
-            StringUtils::trimInPlace(s);
+            StringUtil::trimInPlace(s);
             return reset();
         }
         else
@@ -118,13 +112,13 @@ public:
     template <typename T>
     bool getKey(const char *key, T &value)
         /// Parse string 'KEY VALUE'. If VALUE is empty then value = 0.
-        /// If key == KEY and VALUE is valid decimal number or empty then return true.
+        /// If key == KEY and VALUE is valid T or empty then return true.
     {
         if (updateLine())
         { 
             std::string s;
             ss >> s;
-            StringUtils::upperCaseInPlace(s);
+            StringUtil::upperCaseInPlace(s);
             if (s == key)
             {
                 ss >> std::ws;
@@ -147,19 +141,23 @@ public:
     std::istringstream ss;
 
 private:
-    Parser(Parser &);
-    void operator=(Parser &);
+    StreamParser(StreamParser&);
+    void operator=(StreamParser&);
 };
 
+}  // namespace for helpers
+
+namespace Patch {
+
 //
-//  Patch Error
+//  Error
 //
 
 const char *Patch::Error::toString() const
 {
     switch (code_)
     {
-        case OK:                   return "Ok";
+        case OK:                   return "OK";
 
         case EMPTY_PATCH:          return "Patch file is empty";
         case INVALID_SIGNATURE:    return "Invalid signature in patch file";
@@ -189,18 +187,18 @@ const char *Patch::Error::toString() const
 }
 
 //
-//  Patch
+//  Patcher
 //
 
-const char *Patch::SIGNATURE = "SIMPLEDIFF";
-const tchar *const Patch::PATCH_FILE_EXTS[] = 
+const char *Patcher::SIGNATURE = "SIMPLEDIFF";
+const tchar *const Patcher::PATCH_FILE_EXTS[] = 
 {
     _T(""),
     _T(".sdiff"),
     _T(".simplediff")
 };
 
-bool Patch::calcCrc32(std::istream &f, unsigned int &result)
+bool Patcher::calcCrc32(std::istream &f, unsigned int &result)
 {
     f.clear();
     f.seekg(0);
@@ -225,7 +223,7 @@ bool Patch::calcCrc32(std::istream &f, unsigned int &result)
     return true;
 }
 
-bool Patch::apply(const tchar *targetFileName)
+bool Patcher::apply(const tchar *targetFileName)
 {
     std::fstream targetFile(targetFileName, std::ios::in | std::ios::out | std::ios::ate | std::ios::binary);
     if (!targetFile)
@@ -237,7 +235,7 @@ bool Patch::apply(const tchar *targetFileName)
         return apply_(targetFile);
 }
 
-bool Patch::apply_(std::fstream &targetFile)
+bool Patcher::apply_(std::fstream &targetFile)
 {
     // size
     const auto size = targetFile.tellg();
@@ -287,7 +285,7 @@ bool Patch::apply_(std::fstream &targetFile)
     return true;
 }
 
-bool Patch::load(const tchar *patchFileName)
+bool Patcher::load(const tchar *patchFileName)
 {
     std::ifstream patchFile;
     tstring s;
@@ -305,9 +303,9 @@ bool Patch::load(const tchar *patchFileName)
     return false;
 }
 
-bool Patch::parse_(std::istream &patchFile)
+bool Patcher::parse_(std::istream &patchFile)
 {
-    Parser p(&patchFile);
+    StreamParser p(&patchFile);
     p.file->exceptions(std::ios::badbit);
     try
     {
@@ -397,7 +395,7 @@ bool Patch::parse_(std::istream &patchFile)
     return true;
 }
 
-bool Patch::compare(const tchar *oldFileName, const tchar *newFileName)
+bool Patcher::compare(const tchar *oldFileName, const tchar *newFileName)
 {
     std::ifstream oldFile(oldFileName, std::ios::in | std::ios::binary);
     if (oldFile)
@@ -413,7 +411,7 @@ bool Patch::compare(const tchar *oldFileName, const tchar *newFileName)
     return false;
 }
 
-bool Patch::compare_(std::istream &oldFile, std::istream &newFile)
+bool Patcher::compare_(std::istream &oldFile, std::istream &newFile)
 {
     // check size
     oldFile.seekg(0, std::ios_base::end);
@@ -468,7 +466,7 @@ bool Patch::compare_(std::istream &oldFile, std::istream &newFile)
     return lastError_ == Error::OK;
 }
 
-bool Patch::save(const tchar *patchFileName)
+bool Patcher::save(const tchar *patchFileName)
 {
     std::ofstream patchFile(patchFileName, std::ios::out | std::ios::trunc);
     if (patchFile)
@@ -480,7 +478,7 @@ bool Patch::save(const tchar *patchFileName)
     }
 }
 
-bool Patch::save_(std::ostream &patchFile)
+bool Patcher::save_(std::ostream &patchFile)
 {
     lastError_ = Error::CANNOT_WRITE_PATCH;
 
@@ -533,21 +531,19 @@ bool Patch::save_(std::ostream &patchFile)
     return true;
 }
 
-//
-//  ==
-//
-
-bool operator==(const Patch::Error &lhs, const Patch::Error &rhs)
+bool operator==(const Error &lhs, const Error &rhs)
 {
     return lhs.code() == rhs.code();
 }
 
-bool operator==(const Patch::Error &lhs, const Patch::Error::Code &rhs)
+bool operator==(const Error &lhs, const Error::Code &rhs)
 {
     return lhs.code() == rhs;
 }
 
-bool operator==(const Patch::Error::Code &lhs, const Patch::Error &rhs)
+bool operator==(const Error::Code &lhs, const Error &rhs)
 {
     return lhs == rhs.code();
 }
+
+}  // namespace Patch

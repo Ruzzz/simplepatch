@@ -1,3 +1,9 @@
+//
+// Project: Simple Patch
+// Date:    2013-03-07
+// Author:  Ruzzz <ruzzzua[]gmail.com>
+//
+
 #pragma once
 
 class Crc32

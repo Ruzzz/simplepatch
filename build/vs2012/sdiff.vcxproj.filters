@@ -28,7 +28,7 @@
     <ClInclude Include="..\..\src\Crc32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\string_utils.h">
+    <ClInclude Include="..\..\src\StringUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

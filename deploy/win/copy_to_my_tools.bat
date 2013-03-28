@@ -15,7 +15,7 @@ if "%TOOLS_PATH:~-1%"=="\" (
 )
 
 rem Set default path
-if [%TOOLS_PATH%]==[] (
+if "%TOOLS_PATH%"=="" (
     set TOOLS_PATH=%DEFAULT_TOOLS_PATH%
 )
 

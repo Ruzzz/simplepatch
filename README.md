@@ -1,14 +1,14 @@
 Simple Patch
 ============
 
-Simple diff and patch command line utilities for files with the same size.
+diff and patch command line utilities for binary files with the same size.
 
 ## Usage ##
 
     sdiff oldfile newfile patchfile
     spatch targetfile patchfile[.sdiff|.simplediff] [-nobackup]
 
-## Format of \*.sdiff (\*.simplediff) file ##
+## Format of \*.sdiff (\*.simplediff) files ##
 
 Text file, all numbers - hexadecimal:
 

@@ -1,8 +1,14 @@
-﻿#include <gtest/gtest.h>
+﻿//
+// Project: Simple Patch
+// Date:    2013-03-13
+// Author:  Ruzzz <ruzzzua[]gmail.com>
+//
+
+#include <gtest/gtest.h>
 #include "Patch.h"
 
 //
-//  Patch apply
+//  Patcher apply
 //
 
 TEST(test_patch_apply, okey)
@@ -11,7 +17,7 @@ TEST(test_patch_apply, okey)
 }
 
 //
-//  Patch parse
+//  Patcher parse
 //
 
 TEST(test_patch_parse, full_1)
@@ -25,7 +31,7 @@ TEST(test_patch_parse, full_1)
                   "00F2AF 30\n"
                   "\n");
     std::istringstream ss(s);
-    Patch p;
+    Patch::Patcher p;
     ASSERT_TRUE(p.parse_(ss));
     ASSERT_EQ(p.fileSize_, 1000000);
     ASSERT_EQ(p.fileCrc32_, 0x4092B71A);
@@ -50,7 +56,7 @@ TEST(test_patch_parse, full_2)
                   "   00F15D   30   00   00   \n"
                   "00F2AF 30");
     std::istringstream ss(s);
-    Patch p;
+    Patch::Patcher p;
     ASSERT_TRUE(p.parse_(ss));
     ASSERT_EQ(p.fileSize_, 0);
     ASSERT_EQ(p.fileCrc32_, 0);
@@ -71,7 +77,7 @@ TEST(test_patch_parse, signature_invalid)
 {
     std::string s("SIZE\n");
     std::istringstream ss(s);
-    Patch p;
+    Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
     ASSERT_EQ(p.getLastError(), Patch::Error::INVALID_SIGNATURE);
 }
@@ -81,7 +87,7 @@ TEST(test_patch_parse, size_skip)
     std::string s("SIMPLEDIFF\n"
                   "00F2AF 30");
     std::istringstream ss(s);
-    Patch p;
+    Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
     ASSERT_EQ(p.getLastError(), Patch::Error::INVALID_SIZE);
 }
@@ -92,7 +98,7 @@ TEST(test_patch_parse, size_invalid_decimal)
                   "SIZE AA\n"
                   "00F2AF 30");
     std::istringstream ss(s);
-    Patch p;
+    Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
     ASSERT_EQ(p.getLastError(), Patch::Error::INVALID_SIZE);
 }
@@ -103,7 +109,7 @@ TEST(test_patch_parse, crc_skip)
                   "SIZE\n"
                   "00F2AF 30");
     std::istringstream ss(s);
-    Patch p;
+    Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
     ASSERT_EQ(p.getLastError(), Patch::Error::INVALID_CRC32);
 }
@@ -115,7 +121,7 @@ TEST(test_patch_parse, crc_invalid_hexadecimal)
                   "CRC ZZ\n"
                   "00F2AF 30");
     std::istringstream ss(s);
-    Patch p;
+    Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
     ASSERT_EQ(p.getLastError(), Patch::Error::INVALID_CRC32);
 }
@@ -126,7 +132,7 @@ TEST(test_patch_parse, empty_patch_data_1)
                   "SIZE\n"
                   "CRC");
     std::istringstream ss(s);
-    Patch p;
+    Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
     ASSERT_EQ(p.getLastError(), Patch::Error::EMPTY_PATCH);
 }
@@ -137,7 +143,7 @@ TEST(test_patch_parse, empty_patch_data_2)
                   "SIZE\n"
                   "CRC\n");
     std::istringstream ss(s);
-    Patch p;
+    Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
     ASSERT_EQ(p.getLastError(), Patch::Error::EMPTY_PATCH);
 }
@@ -149,7 +155,7 @@ TEST(test_patch_parse, offset_invalid_hexadecimal)
                   "CRC\n"
                   "ZZZZZZ 00 00 00\n");
     std::istringstream ss(s);
-    Patch p;
+    Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
     ASSERT_EQ(p.getLastError(), Patch::Error::INVALID_OFFSET_VALUE);
 }
@@ -161,7 +167,7 @@ TEST(test_patch_parse, offset_larger_than_size)
                   "CRC\n"
                   "FFFF 00 00 00\n");
     std::istringstream ss(s);
-    Patch p;
+    Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
     ASSERT_EQ(p.getLastError(), Patch::Error::INVALID_OFFSET_VALUE);
 }
@@ -173,7 +179,7 @@ TEST(test_patch_parse, byte_invalid_hexadecimal)
                   "CRC\n" 
                   "FFFFFF ZZ\n");
     std::istringstream ss(s);
-    Patch p;
+    Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
     ASSERT_EQ(p.getLastError(), Patch::Error::INVALID_BYTE_VALUE);
 }
@@ -185,20 +191,20 @@ TEST(test_patch_parse, byte_larger_than_FF)
                   "CRC\n"
                   "FFFFFF 0100\n");
     std::istringstream ss(s);
-    Patch p;
+    Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
     ASSERT_EQ(p.getLastError(), Patch::Error::INVALID_BYTE_VALUE);
 }
 
 //
-//  Patch compare
+//  Patcher compare
 //
 
 TEST(test_patch_compare, different_size)
 {
     std::istringstream ss1(std::string("book1"));
     std::istringstream ss2(std::string("book11"));
-    Patch p;
+    Patch::Patcher p;
     ASSERT_FALSE(p.compare_(ss1, ss2));
     ASSERT_EQ(p.getLastError(), Patch::Error::DIFFERENT_SIZE);
 }
@@ -207,7 +213,7 @@ TEST(test_patch_compare, okey)
 {
     std::istringstream ss1(std::string("book1"));
     std::istringstream ss2(std::string("baoz2"));
-    Patch p;
+    Patch::Patcher p;
     ASSERT_TRUE(p.compare_(ss1, ss2));
     ASSERT_EQ(p.getLastError(), Patch::Error::OK);
     ASSERT_EQ(p.fileSize_, 5);
@@ -226,13 +232,13 @@ TEST(test_patch_compare, okey)
 }
 
 //
-//  Patch save
+//  Patcher save
 //
 
 TEST(test_patch_save, okey)
 {
     std::ostringstream ss;
-    Patch p;
+    Patch::Patcher p;
     Patch::Bytes b;
     b.push_back(0x30);
     b.push_back(0x00);
@@ -241,6 +247,10 @@ TEST(test_patch_save, okey)
     ASSERT_EQ(p.getLastError(), Patch::Error::OK);
     ASSERT_STREQ("SIMPLEDIFF\nSIZE 0\nCRC 00000000\nABCD 30 00\n", ss.str().c_str());
 }
+
+//
+//  main
+//
 
 int main(int argc, char **argv)
 {

@@ -1,6 +1,7 @@
 rem Pack exe files in 7z archive
+rem Dependences: http://www.7-zip.org
 
-rem Init
+rem Initialize
 call get_version.bat
 set ROOT_PATH=%~dp0..\..
 SET ARC_NAME=simplepatch_v%VERSION%_win
