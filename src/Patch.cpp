@@ -180,7 +180,7 @@ const char *Patch::Error::toString() const
         case EMPTY_TARGET:         return "Target file is empty";
         case CANNOT_OPEN_TARGET:   return "Cannot open target file";
         case CANNOT_READ_TARGET:   return "Error reading target file";
-        case CANNOT_WRITE_TARGET:   return "Error writing to target file";
+        case CANNOT_WRITE_TARGET:  return "Error writing to target file";
 
         default:                   return "Unknown error";
     }
@@ -197,31 +197,6 @@ const tchar *const Patcher::PATCH_FILE_EXTS[] =
     _T(".sdiff"),
     _T(".simplediff")
 };
-
-bool Patcher::calcCrc32(std::istream &f, unsigned int &result)
-{
-    f.clear();
-    f.seekg(0);
-
-    Crc32 crc;
-    const unsigned int BUFFER_LEN = 1024 * 64;
-    std::vector<char> buffer(BUFFER_LEN);
-    while (!f.eof())
-    {
-        f.read((char *)buffer.data(), buffer.size());
-        unsigned int readed = (unsigned int)f.gcount();
-        if (readed)
-        {
-            if (f.bad())
-                return false;
-            else
-                crc.compute((void *)buffer.data(), readed);
-        } else
-            break;
-    }
-    result = crc.value();
-    return true;
-}
 
 bool Patcher::apply(const tchar *targetFileName)
 {
@@ -254,7 +229,7 @@ bool Patcher::apply_(std::fstream &targetFile)
     if (fileCrc32_)
     {
         unsigned int currentCrc;
-        if (!calcCrc32(targetFile, currentCrc))
+        if (!Crc32::calc(targetFile, currentCrc))
         {
             lastError_ = Error::CANNOT_READ_TARGET;
             return false;
