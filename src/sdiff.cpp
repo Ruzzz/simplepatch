@@ -4,9 +4,11 @@
 // Author:  Ruzzz <ruzzzua[]gmail.com>
 //
 
+
 #include <iostream>
 #include "defs.h"
 #include "Patch.h"
+
 
 const char USAGE[] =
 {
@@ -16,6 +18,7 @@ const char USAGE[] =
     "\n"
     "Note: old-file and new-file must have the same size.\n"
 };
+
 
 int _tmain(int argc, const tchar *argv[])
 {

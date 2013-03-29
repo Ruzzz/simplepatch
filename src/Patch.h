@@ -4,7 +4,9 @@
 // Author:  Ruzzz <ruzzzua[]gmail.com>
 //
 
+
 #pragma once
+
 
 #include <fstream>
 #include <vector>
@@ -12,10 +14,13 @@
 
 #include "defs.h"
 
+
 namespace Patch {
+
 
 typedef std::vector<unsigned char> Bytes;
 typedef std::map<size_t, Bytes> DiffData;
+
 
 class Error
 {
@@ -33,7 +38,7 @@ public:
 
         CANNOT_CREATE_PATCH,
         CANNOT_OPEN_PATCH,
-        CANNOT_WRITE_PATCH,            
+        CANNOT_WRITE_PATCH,
         CANNOT_READ_PATCH,
 
         DIFFERENT_SIZE,
@@ -59,6 +64,12 @@ public:
 private:
     Code code_;
 };
+
+
+bool operator==(const Error &lhs, const Error &rhs);
+bool operator==(const Error &lhs, const Error::Code &rhs);
+bool operator==(const Error::Code &lhs, const Error &rhs);
+
 
 class Patcher
 {
@@ -87,8 +98,5 @@ private:
     Error lastError_;
 };
 
-bool operator==(const Error &lhs, const Error &rhs);
-bool operator==(const Error &lhs, const Error::Code &rhs);
-bool operator==(const Error::Code &lhs, const Error &rhs);
 
 }  // namespace Patch

@@ -4,11 +4,14 @@
 // Author:  Ruzzz <ruzzzua[]gmail.com>
 //
 
+
 #pragma once
+
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
+
 
 class FileUtil
 {

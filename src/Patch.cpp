@@ -4,6 +4,7 @@
 // Author:  Ruzzz <ruzzzua[]gmail.com>
 //
 
+
 #include <sstream>
 #include <string>
 #include <iomanip>
@@ -15,11 +16,14 @@
 #include "Crc32.h"
 #include "StringUtil.h"
 
+
 #ifdef _WIN32
 typedef unsigned __int64 uint64_t;
 #endif
 
+
 namespace {  // Helpers
+
 
 class DiffComputer
 {
@@ -72,6 +76,7 @@ private:
     Patch::Bytes bytes_;
     Patch::DiffData *data_;
 };
+
 
 class StreamParser
 {
@@ -145,13 +150,17 @@ private:
     void operator=(StreamParser&);
 };
 
+
 }  // namespace for helpers
 
+
 namespace Patch {
+
 
 //
 //  Error
 //
+
 
 const char *Patch::Error::toString() const
 {
@@ -186,9 +195,29 @@ const char *Patch::Error::toString() const
     }
 }
 
+
+bool operator==(const Error &lhs, const Error &rhs)
+{
+    return lhs.code() == rhs.code();
+}
+
+
+bool operator==(const Error &lhs, const Error::Code &rhs)
+{
+    return lhs.code() == rhs;
+}
+
+
+bool operator==(const Error::Code &lhs, const Error &rhs)
+{
+    return lhs == rhs.code();
+}
+
+
 //
 //  Patcher
 //
+
 
 const char *Patcher::SIGNATURE = "SIMPLEDIFF";
 const tchar *const Patcher::PATCH_FILE_EXTS[] = 
@@ -197,6 +226,7 @@ const tchar *const Patcher::PATCH_FILE_EXTS[] =
     _T(".sdiff"),
     _T(".simplediff")
 };
+
 
 bool Patcher::apply(const tchar *targetFileName)
 {
@@ -209,6 +239,7 @@ bool Patcher::apply(const tchar *targetFileName)
     else
         return apply_(targetFile);
 }
+
 
 bool Patcher::apply_(std::fstream &targetFile)
 {
@@ -260,6 +291,7 @@ bool Patcher::apply_(std::fstream &targetFile)
     return true;
 }
 
+
 bool Patcher::load(const tchar *patchFileName)
 {
     std::ifstream patchFile;
@@ -277,6 +309,7 @@ bool Patcher::load(const tchar *patchFileName)
     lastError_ = Error::CANNOT_OPEN_PATCH;
     return false;
 }
+
 
 bool Patcher::parse_(std::istream &patchFile)
 {
@@ -370,6 +403,7 @@ bool Patcher::parse_(std::istream &patchFile)
     return true;
 }
 
+
 bool Patcher::compare(const tchar *oldFileName, const tchar *newFileName)
 {
     std::ifstream oldFile(oldFileName, std::ios::in | std::ios::binary);
@@ -385,6 +419,7 @@ bool Patcher::compare(const tchar *oldFileName, const tchar *newFileName)
         lastError_ = Error::CANNOT_OPEN_OLDFILE;
     return false;
 }
+
 
 bool Patcher::compare_(std::istream &oldFile, std::istream &newFile)
 {
@@ -441,6 +476,7 @@ bool Patcher::compare_(std::istream &oldFile, std::istream &newFile)
     return lastError_ == Error::OK;
 }
 
+
 bool Patcher::save(const tchar *patchFileName)
 {
     std::ofstream patchFile(patchFileName, std::ios::out | std::ios::trunc);
@@ -452,6 +488,7 @@ bool Patcher::save(const tchar *patchFileName)
         return false;
     }
 }
+
 
 bool Patcher::save_(std::ostream &patchFile)
 {
@@ -506,19 +543,5 @@ bool Patcher::save_(std::ostream &patchFile)
     return true;
 }
 
-bool operator==(const Error &lhs, const Error &rhs)
-{
-    return lhs.code() == rhs.code();
-}
-
-bool operator==(const Error &lhs, const Error::Code &rhs)
-{
-    return lhs.code() == rhs;
-}
-
-bool operator==(const Error::Code &lhs, const Error &rhs)
-{
-    return lhs == rhs.code();
-}
 
 }  // namespace Patch

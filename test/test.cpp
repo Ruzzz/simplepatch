@@ -4,21 +4,26 @@
 // Author:  Ruzzz <ruzzzua[]gmail.com>
 //
 
+
 #include <gtest/gtest.h>
 #include "Patch.h"
+
 
 //
 //  Patcher apply
 //
+
 
 TEST(test_patch_apply, okey)
 {
     // TODO
 }
 
+
 //
 //  Patcher parse
 //
+
 
 TEST(test_patch_parse, full_1)
 {
@@ -48,6 +53,7 @@ TEST(test_patch_parse, full_1)
     ASSERT_EQ(d->second[0], 0x30);
 }
 
+
 TEST(test_patch_parse, full_2)
 {
     std::string s("SIMPLEDIFF\n"
@@ -73,6 +79,7 @@ TEST(test_patch_parse, full_2)
     ASSERT_EQ(d->second[0], 0x30);
 }
 
+
 TEST(test_patch_parse, signature_invalid)
 {
     std::string s("SIZE\n");
@@ -81,6 +88,7 @@ TEST(test_patch_parse, signature_invalid)
     ASSERT_FALSE(p.parse_(ss));
     ASSERT_EQ(p.getLastError(), Patch::Error::INVALID_SIGNATURE);
 }
+
 
 TEST(test_patch_parse, size_skip)
 {
@@ -91,6 +99,7 @@ TEST(test_patch_parse, size_skip)
     ASSERT_FALSE(p.parse_(ss));
     ASSERT_EQ(p.getLastError(), Patch::Error::INVALID_SIZE);
 }
+
 
 TEST(test_patch_parse, size_invalid_decimal)
 {
@@ -103,6 +112,7 @@ TEST(test_patch_parse, size_invalid_decimal)
     ASSERT_EQ(p.getLastError(), Patch::Error::INVALID_SIZE);
 }
 
+
 TEST(test_patch_parse, crc_skip)
 {
     std::string s("SIMPLEDIFF\n"
@@ -113,6 +123,7 @@ TEST(test_patch_parse, crc_skip)
     ASSERT_FALSE(p.parse_(ss));
     ASSERT_EQ(p.getLastError(), Patch::Error::INVALID_CRC32);
 }
+
 
 TEST(test_patch_parse, crc_invalid_hexadecimal)
 {
@@ -126,6 +137,7 @@ TEST(test_patch_parse, crc_invalid_hexadecimal)
     ASSERT_EQ(p.getLastError(), Patch::Error::INVALID_CRC32);
 }
 
+
 TEST(test_patch_parse, empty_patch_data_1)
 {
     std::string s("SIMPLEDIFF\n"
@@ -137,6 +149,7 @@ TEST(test_patch_parse, empty_patch_data_1)
     ASSERT_EQ(p.getLastError(), Patch::Error::EMPTY_PATCH);
 }
 
+
 TEST(test_patch_parse, empty_patch_data_2)
 {
     std::string s("SIMPLEDIFF\n"
@@ -147,6 +160,7 @@ TEST(test_patch_parse, empty_patch_data_2)
     ASSERT_FALSE(p.parse_(ss));
     ASSERT_EQ(p.getLastError(), Patch::Error::EMPTY_PATCH);
 }
+
 
 TEST(test_patch_parse, offset_invalid_hexadecimal)
 {
@@ -160,6 +174,7 @@ TEST(test_patch_parse, offset_invalid_hexadecimal)
     ASSERT_EQ(p.getLastError(), Patch::Error::INVALID_OFFSET_VALUE);
 }
 
+
 TEST(test_patch_parse, offset_larger_than_size)
 {
     std::string s("SIMPLEDIFF\n"
@@ -171,6 +186,7 @@ TEST(test_patch_parse, offset_larger_than_size)
     ASSERT_FALSE(p.parse_(ss));
     ASSERT_EQ(p.getLastError(), Patch::Error::INVALID_OFFSET_VALUE);
 }
+
 
 TEST(test_patch_parse, byte_invalid_hexadecimal)
 {
@@ -184,6 +200,7 @@ TEST(test_patch_parse, byte_invalid_hexadecimal)
     ASSERT_EQ(p.getLastError(), Patch::Error::INVALID_BYTE_VALUE);
 }
 
+
 TEST(test_patch_parse, byte_larger_than_FF)
 {
     std::string s("SIMPLEDIFF\n"
@@ -196,9 +213,11 @@ TEST(test_patch_parse, byte_larger_than_FF)
     ASSERT_EQ(p.getLastError(), Patch::Error::INVALID_BYTE_VALUE);
 }
 
+
 //
 //  Patcher compare
 //
+
 
 TEST(test_patch_compare, different_size)
 {
@@ -208,6 +227,7 @@ TEST(test_patch_compare, different_size)
     ASSERT_FALSE(p.compare_(ss1, ss2));
     ASSERT_EQ(p.getLastError(), Patch::Error::DIFFERENT_SIZE);
 }
+
 
 TEST(test_patch_compare, okey)
 {
@@ -231,9 +251,11 @@ TEST(test_patch_compare, okey)
     ASSERT_EQ(d->second[1], '2');
 }
 
+
 //
 //  Patcher save
 //
+
 
 TEST(test_patch_save, okey)
 {
@@ -248,9 +270,11 @@ TEST(test_patch_save, okey)
     ASSERT_STREQ("SIMPLEDIFF\nSIZE 0\nCRC 00000000\nABCD 30 00\n", ss.str().c_str());
 }
 
+
 //
 //  main
 //
+
 
 int main(int argc, char **argv)
 {

@@ -4,7 +4,9 @@
 // Author:  Ruzzz <ruzzzua[]gmail.com>
 //
 
+
 #pragma once
+
 
 class StringUtil
 {

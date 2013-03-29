@@ -150,3 +150,6 @@ $RECYCLE.BIN/
 # MY
 bin
 test0
+*_Debug
+*_Release
+*.plog

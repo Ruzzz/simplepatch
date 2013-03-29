@@ -11,20 +11,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\src\Crc32.cpp" />
-    <ClCompile Include="..\..\src\Patch.cpp" />
-    <ClCompile Include="..\..\src\sdiff.cpp" />
+    <ClCompile Include="..\..\..\src\Crc32.cpp" />
+    <ClCompile Include="..\..\..\src\Patch.cpp" />
+    <ClCompile Include="..\..\..\src\spatch.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\Crc32.h" />
-    <ClInclude Include="..\..\src\defs.h" />
-    <ClInclude Include="..\..\src\Patch.h" />
-    <ClInclude Include="..\..\src\StringUtil.h" />
+    <ClInclude Include="..\..\..\src\Crc32.h" />
+    <ClInclude Include="..\..\..\src\defs.h" />
+    <ClInclude Include="..\..\..\src\FileUtil.h" />
+    <ClInclude Include="..\..\..\src\Patch.h" />
+    <ClInclude Include="..\..\..\src\StringUtil.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{40EE09A8-188A-47BA-9B39-32C7E132FD3A}</ProjectGuid>
+    <ProjectGuid>{DAD77D6A-FE47-4EF5-9C02-9380813092EC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>sdiff</RootNamespace>
+    <RootNamespace>spatch</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -53,13 +54,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)_d</TargetName>
-    <IntDir>$(ProjectName)_$(Configuration)\</IntDir>
-    <OutDir>..\..\bin\</OutDir>
+    <OutDir>..\..\..\bin\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IntDir>$(ProjectName)_$(Configuration)\</IntDir>
-    <OutDir>..\..\bin\</OutDir>
+    <OutDir>..\..\..\bin\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -87,11 +88,10 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <StringPooling>true</StringPooling>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <ExceptionHandling>Sync</ExceptionHandling>
-      <BufferSecurityCheck>true</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -4,6 +4,7 @@
 // Author:  Ruzzz <ruzzzua[]gmail.com>
 //
 
+
 #include <iostream>
 
 #ifdef _WIN32
@@ -14,12 +15,14 @@
 #include "Patch.h"
 #include "FileUtil.h"
 
+
 const char USAGE[] =
 {
     "Simple Patch v"VERSION" by Ruzzz\n"
     "Apply simple patch file to target file.\n"
     "Usage: spatch target-file patch-file[.sdiff|.simplediff] [-nobackup]\n"
 };
+
 
 int _tmain(int argc, const tchar *argv[])
 {
