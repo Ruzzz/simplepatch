@@ -1,6 +1,10 @@
 Changes
 =======
 
+### Version 0.3.1 (2013-04-01)
+
+- Added: Option -resize
+
 ### Version 0.3 (2013-03-21)
 
 - Added: optimized reading of files in sdiff
