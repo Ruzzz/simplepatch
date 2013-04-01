@@ -5,8 +5,45 @@
 //
 
 
+#include <cstdio>
+
 #include <gtest/gtest.h>
+
 #include "Patch.h"
+
+
+//
+//  Initialize
+//
+
+// TODO
+/*class PatchEnv: public testing::Environment
+{
+public:
+    static char         fillChar()      { return '0'; }
+    static int          fileSize()      { return 1024; }
+    static unsigned int oldFileCrc32()  { return 0xEFB5AF2E; }
+    static const char*  oldFileName()   { return "oldFileName.bin"; }
+    static const char*  newFileName()   { return "newFileName.bin"; }
+    static const char*  patchFileName() { return "patchFileName.sdiff"; }
+
+protected:
+    void SetUp()
+    {
+        std::string s(fileSize(), fillChar());
+        std::ofstream oldFile(oldFileName());
+        oldFile.write(s.c_str(), s.length());
+        s[2] = '0xAA';
+        std::ofstream newFile(newFileName());
+        newFile.write(s.c_str(), s.length());
+    }
+
+    void TearDown()
+    {
+        std::remove(oldFileName());
+        std::remove(newFileName());
+    }
+};*/
 
 
 //
@@ -14,7 +51,7 @@
 //
 
 
-TEST(test_patch_apply, okey)
+TEST(PatchApplyTest, todo)
 {
     // TODO
 }
@@ -25,16 +62,19 @@ TEST(test_patch_apply, okey)
 //
 
 
-TEST(test_patch_parse, full_1)
+TEST(PatchParseTest, parse_ok_1)
 {
-    std::string s("SIMPLEDIFF\n"
-                  "SIZE 1000000\n"
-                  "CRC 4092B71A\n"
-                  "\n"
-                  "   00F15D   30   00   00   \n"
-                  "\n"
-                  "00F2AF 30\n"
-                  "\n");
+    std::string s(
+
+        "SIMPLEDIFF\n"
+        "SIZE 1000000\n"
+        "CRC 4092B71A\n"
+        "\n"
+        "   00F15D   30   00   00   \n"
+        "\n"
+        "00F2AF 30\n"
+        "\n");
+
     std::istringstream ss(s);
     Patch::Patcher p;
     ASSERT_TRUE(p.parse_(ss));
@@ -54,13 +94,16 @@ TEST(test_patch_parse, full_1)
 }
 
 
-TEST(test_patch_parse, full_2)
+TEST(PatchParseTest, parse_ok_2)
 {
-    std::string s("SIMPLEDIFF\n"
-                  "size   \n"
-                  "Crc\n"
-                  "   00F15D   30   00   00   \n"
-                  "00F2AF 30");
+    std::string s(
+
+        "SIMPLEDIFF\n"
+        "size   \n"
+        "Crc\n"
+        "   00F15D   30   00   00   \n"
+        "00F2AF 30");
+
     std::istringstream ss(s);
     Patch::Patcher p;
     ASSERT_TRUE(p.parse_(ss));
@@ -80,7 +123,7 @@ TEST(test_patch_parse, full_2)
 }
 
 
-TEST(test_patch_parse, signature_invalid)
+TEST(PatchParseTest, invalid_signature)
 {
     std::string s("SIZE\n");
     std::istringstream ss(s);
@@ -90,10 +133,13 @@ TEST(test_patch_parse, signature_invalid)
 }
 
 
-TEST(test_patch_parse, size_skip)
+TEST(PatchParseTest, skip_size)
 {
-    std::string s("SIMPLEDIFF\n"
-                  "00F2AF 30");
+    std::string s(
+
+        "SIMPLEDIFF\n"
+        "00F2AF 30");
+
     std::istringstream ss(s);
     Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
@@ -101,11 +147,14 @@ TEST(test_patch_parse, size_skip)
 }
 
 
-TEST(test_patch_parse, size_invalid_decimal)
+TEST(PatchParseTest, invalid_size)
 {
-    std::string s("SIMPLEDIFF\n"
-                  "SIZE AA\n"
-                  "00F2AF 30");
+    std::string s(
+
+        "SIMPLEDIFF\n"
+        "SIZE AA\n"
+        "00F2AF 30");
+
     std::istringstream ss(s);
     Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
@@ -113,11 +162,14 @@ TEST(test_patch_parse, size_invalid_decimal)
 }
 
 
-TEST(test_patch_parse, crc_skip)
+TEST(PatchParseTest, skip_crc)
 {
-    std::string s("SIMPLEDIFF\n"
-                  "SIZE\n"
-                  "00F2AF 30");
+    std::string s(
+
+        "SIMPLEDIFF\n"
+        "SIZE\n"
+        "00F2AF 30");
+
     std::istringstream ss(s);
     Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
@@ -125,12 +177,15 @@ TEST(test_patch_parse, crc_skip)
 }
 
 
-TEST(test_patch_parse, crc_invalid_hexadecimal)
+TEST(PatchParseTest, invalid_crc)
 {
-    std::string s("SIMPLEDIFF\n"
-                  "SIZE\n"
-                  "CRC ZZ\n"
-                  "00F2AF 30");
+    std::string s(
+
+        "SIMPLEDIFF\n"
+        "SIZE\n"
+        "CRC ZZ\n"
+        "00F2AF 30");
+
     std::istringstream ss(s);
     Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
@@ -138,11 +193,14 @@ TEST(test_patch_parse, crc_invalid_hexadecimal)
 }
 
 
-TEST(test_patch_parse, empty_patch_data_1)
+TEST(PatchParseTest, empty_patch_data_1)
 {
-    std::string s("SIMPLEDIFF\n"
-                  "SIZE\n"
-                  "CRC");
+    std::string s(
+
+        "SIMPLEDIFF\n"
+        "SIZE\n"
+        "CRC");
+
     std::istringstream ss(s);
     Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
@@ -150,11 +208,14 @@ TEST(test_patch_parse, empty_patch_data_1)
 }
 
 
-TEST(test_patch_parse, empty_patch_data_2)
+TEST(PatchParseTest, empty_patch_data_2)
 {
-    std::string s("SIMPLEDIFF\n"
-                  "SIZE\n"
-                  "CRC\n");
+    std::string s(
+
+        "SIMPLEDIFF\n"
+        "SIZE\n"
+        "CRC\n");
+
     std::istringstream ss(s);
     Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
@@ -162,12 +223,15 @@ TEST(test_patch_parse, empty_patch_data_2)
 }
 
 
-TEST(test_patch_parse, offset_invalid_hexadecimal)
+TEST(PatchParseTest, invalid_offset)
 {
-    std::string s("SIMPLEDIFF\n"
-                  "SIZE\n"
-                  "CRC\n"
-                  "ZZZZZZ 00 00 00\n");
+    std::string s(
+
+        "SIMPLEDIFF\n"
+        "SIZE\n"
+        "CRC\n"
+        "ZZZZZZ 00 00 00\n");
+
     std::istringstream ss(s);
     Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
@@ -175,12 +239,15 @@ TEST(test_patch_parse, offset_invalid_hexadecimal)
 }
 
 
-TEST(test_patch_parse, offset_larger_than_size)
+TEST(PatchParseTest, offset_larger_than_size)
 {
-    std::string s("SIMPLEDIFF\n"
-                  "SIZE 250\n"
-                  "CRC\n"
-                  "FFFF 00 00 00\n");
+    std::string s(
+
+        "SIMPLEDIFF\n"
+        "SIZE 250\n"
+        "CRC\n"
+        "FFFF 00 00 00\n");
+
     std::istringstream ss(s);
     Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
@@ -188,12 +255,15 @@ TEST(test_patch_parse, offset_larger_than_size)
 }
 
 
-TEST(test_patch_parse, byte_invalid_hexadecimal)
+TEST(PatchParseTest, invalid_byte)
 {
-    std::string s("SIMPLEDIFF\n"
-                  "SIZE\n" 
-                  "CRC\n" 
-                  "FFFFFF ZZ\n");
+    std::string s(
+
+        "SIMPLEDIFF\n"
+        "SIZE\n"
+        "CRC\n"
+        "FFFFFF ZZ\n");
+
     std::istringstream ss(s);
     Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
@@ -201,12 +271,15 @@ TEST(test_patch_parse, byte_invalid_hexadecimal)
 }
 
 
-TEST(test_patch_parse, byte_larger_than_FF)
+TEST(PatchParseTest, byte_larger_than_FF)
 {
-    std::string s("SIMPLEDIFF\n"
-                  "SIZE\n"
-                  "CRC\n"
-                  "FFFFFF 0100\n");
+    std::string s(
+
+        "SIMPLEDIFF\n"
+        "SIZE\n"
+        "CRC\n"
+        "FFFFFF 0100\n");
+
     std::istringstream ss(s);
     Patch::Patcher p;
     ASSERT_FALSE(p.parse_(ss));
@@ -219,7 +292,7 @@ TEST(test_patch_parse, byte_larger_than_FF)
 //
 
 
-TEST(test_patch_compare, different_size)
+TEST(PatchCompareTest, different_size)
 {
     std::istringstream ss1(std::string("book1"));
     std::istringstream ss2(std::string("book11"));
@@ -229,7 +302,7 @@ TEST(test_patch_compare, different_size)
 }
 
 
-TEST(test_patch_compare, okey)
+TEST(PatchCompareTest, compare_ok)
 {
     std::istringstream ss1(std::string("book1"));
     std::istringstream ss2(std::string("baoz2"));
@@ -257,7 +330,7 @@ TEST(test_patch_compare, okey)
 //
 
 
-TEST(test_patch_save, okey)
+TEST(PatchSaveTest, save_ok)
 {
     std::ostringstream ss;
     Patch::Patcher p;
@@ -267,7 +340,12 @@ TEST(test_patch_save, okey)
     p.diffData_[0xABCD] = b;
     ASSERT_TRUE(p.save_(ss));
     ASSERT_EQ(p.getLastError(), Patch::Error::OK);
-    ASSERT_STREQ("SIMPLEDIFF\nSIZE 0\nCRC 00000000\nABCD 30 00\n", ss.str().c_str());
+    ASSERT_STREQ(
+
+        "SIMPLEDIFF\n"
+        "SIZE 0\n"
+        "CRC 00000000\n"
+        "ABCD 30 00\n", ss.str().c_str());
 }
 
 
@@ -281,5 +359,4 @@ int main(int argc, char **argv)
     testing::InitGoogleTest(&argc, argv);
     // testing::GTEST_FLAG(also_run_disabled_tests) = true;
     return RUN_ALL_TESTS();
-    // std::cerr << p.getLastError().toString() << std::endl;
 }

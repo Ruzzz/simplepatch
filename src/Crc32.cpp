@@ -80,7 +80,7 @@ const unsigned int Crc32::TABLE[256] =
 };
 
 
-bool Crc32::calc(std::istream &f, unsigned int &result)
+bool Crc32::calc(std::istream &f, unsigned int &resultCrc)
 {
     f.clear();
     f.seekg(0);
@@ -90,17 +90,14 @@ bool Crc32::calc(std::istream &f, unsigned int &result)
     std::vector<char> buffer(BUFFER_LEN);
     while (!f.eof())
     {
-        f.read((char *)buffer.data(), buffer.size());
-        unsigned int readed = (unsigned int)f.gcount();
-        if (readed)
-        {
-            if (f.bad())
-                return false;
-            else
-                crc.compute((void *)buffer.data(), readed);
-        } else
+        f.read(buffer.data(), buffer.size());
+        unsigned int readed = static_cast<unsigned int>(f.gcount());
+        if (f.bad())
+            return false;
+        if (!readed)
             break;
+        crc.compute(buffer.data(), readed);
     }
-    result = crc.value();
+    resultCrc = crc.value();
     return true;
 }

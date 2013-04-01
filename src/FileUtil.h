@@ -10,29 +10,46 @@
 
 #ifdef _WIN32
 #include <windows.h>
+#else
+#include <fstream>
 #endif
 
 
 class FileUtil
 {
 public:
-    static bool copyFile(const char *from, const char *to)
-    {
+
 #ifdef _WIN32
-        return ::CopyFileA(from, to, 0) != 0;
-#else
-        return false;
-#endif
+    
+    static bool copyFile(const char *from, const char *to, bool rewrite = false)
+    {
+        return ::CopyFileA(from, to, rewrite ? FALSE : TRUE) != FALSE;
     }
 
-    static bool copyFile(const wchar_t *from, const wchar_t *to)
+    static bool copyFile(const wchar_t *from, const wchar_t *to, bool rewrite = false)
     {
-#ifdef _WIN32
-        return ::CopyFileW(from, to, 0) != 0;
-#else
-        return false;
-#endif
+        return ::CopyFileW(from, to, rewrite ? FALSE : TRUE) != FALSE;
     }
+
+    static bool existsFile(const char *fileName)
+    {
+        return ::GetFileAttributesA(fileName) != DWORD(-1);
+    }
+
+    static bool existsFile(const wchar_t *fileName)
+    {
+        return ::GetFileAttributesW(fileName) != DWORD(-1);
+    }
+
+#else  // OTHERS OS
+
+    template<typename TChar>
+    static bool existsFile(const TChar *fileName)
+    {
+        return std::ifstream(fileName) != nullptr;
+    }
+
+#endif  // _WIN32
 
 private:
     FileUtil();

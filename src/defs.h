@@ -8,13 +8,14 @@
 #pragma once
 
 
-#define VERSION "0.3"
+#define VERSION "0.3.1"
 
-#define MAIN_ABORT(msg) { std::cerr << msg << std::endl; return 1; }
+#define MAIN_ABORT(msg) { std::cerr << "Error: " << msg << "." << std::endl; return EXIT_FAILURE; }
+#define PRINT_ERROR(msg) std::cerr << "Error: " << msg << "." << std::endl;
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
 
-#ifdef GTEST
-#define TESTING
+#ifdef _WIN32
+typedef unsigned __int64 uint64_t;
 #endif
 
 #ifdef _UNICODE

@@ -6,7 +6,10 @@ Simple Patch
 ## Использование ##
 
     sdiff старый_файл новый_файл патч_файл
-    spatch целевой_файл патч_файл[.sdiff|.simplediff] [-nobackup]
+    spatch целевой_файл патч_файл[.sdiff|.simplediff] [-nobackup|-rewrite]
+
+- nobackup - Не создавать резервный файл <целевой_файл.original>.
+- rewrite - Переписать резервный файл, если он присутствует на диске.
 
 ## Формат файлов \*.sdiff (\*.simplediff) ##
 

@@ -5,6 +5,12 @@
 //
 
 
+#if defined(_WIN32) && defined(_DEBUG)
+#define _CRTDBG_MAPALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+#endif
+
 #include <iostream>
 #include "defs.h"
 #include "Patch.h"
@@ -20,21 +26,24 @@ const char USAGE[] =
 };
 
 
-int _tmain(int argc, const tchar *argv[])
+int _tmain(const int argc, const tchar *argv[])
 {
-    if (argc != 4)
-    {
-        std::cout << USAGE;
-        return 1;
-    }
-    else
+    if (argc == 4)
     {
         Patch::Patcher patcher;
         if (!(patcher.compare(argv[1], argv[2]) && patcher.save(argv[3])))
-        {
-            std::cerr << patcher.getLastError().toString() << std::endl;
-            return 1;
-        }
+            MAIN_ABORT(patcher.getLastError().toString())
+
+        // TODO Print OK message
     }
-    return 0;
+    else
+    {
+        std::cout << USAGE;
+        return EXIT_FAILURE;        
+    }
+
+#if defined(_WIN32) && defined(_DEBUG)
+    _CrtDumpMemoryLeaks();
+#endif
+    return EXIT_SUCCESS;
 }

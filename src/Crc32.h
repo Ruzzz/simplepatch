@@ -22,7 +22,7 @@ public:
 
     void compute(const void *data, const unsigned int size)
     {
-        char *p = (char *)data;
+        char *p = reinterpret_cast<char *>(const_cast<void *>(data));
         unsigned int i = size;
         for (; i--; ++p)
             compute(*p);
@@ -30,7 +30,8 @@ public:
 
     void compute(const char c)
     {
-        value_ = (value_ >> 8) ^ TABLE[(value_ ^ c) & 0xFF];
+        unsigned char uc = c;
+        value_ = (value_ >> 8) ^ TABLE[(value_ ^ uc) & 0xFF];
     }
 
     const unsigned int value() const
@@ -38,7 +39,7 @@ public:
         return ~value_;
     }
 
-    static bool calc(std::istream &f, unsigned int &result);
+    static bool calc(std::istream &f, unsigned int &resultCrc);
 
 private:
     static const unsigned int TABLE[256];

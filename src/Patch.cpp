@@ -17,11 +17,6 @@
 #include "StringUtil.h"
 
 
-#ifdef _WIN32
-typedef unsigned __int64 uint64_t;
-#endif
-
-
 namespace {  // Helpers
 
 
@@ -280,7 +275,7 @@ bool Patcher::apply_(std::fstream &targetFile)
         if (targetFile)
         {
             Bytes bytes = it.second;
-            targetFile.write((const char *)bytes.data(), bytes.size());
+            targetFile.write(reinterpret_cast<const char *>(bytes.data()), bytes.size());
             if (targetFile)
                 continue;
         }
@@ -451,14 +446,14 @@ bool Patcher::compare_(std::istream &oldFile, std::istream &newFile)
         Crc32 crc;
         DiffComputer c(&diffData_);
 
-        std::istreambuf_iterator<char> oldStream(oldFile.rdbuf());
-        std::istreambuf_iterator<char> newStream(newFile.rdbuf());
-        std::istreambuf_iterator<char> end;
+        std::istreambuf_iterator<char> oldIt(oldFile.rdbuf()),
+                                       newIt(newFile.rdbuf()),
+                                       end;
 
-        for (;oldStream != end && newStream != end; ++oldStream, ++newStream)
+        for (;oldIt != end && newIt != end; ++oldIt, ++newIt)
         {
-            crc.compute(*oldStream);
-            c.compare(*oldStream, *newStream);
+            crc.compute(*oldIt);
+            c.compare(*oldIt, *newIt);
         }
 
         fileCrc32_ = crc.value();
@@ -521,7 +516,7 @@ bool Patcher::save_(std::ostream &patchFile)
         for (auto it : diffData_)
             if (it.first > max)
                 max = it.first;
-    unsigned int offsetLen = (unsigned int)ceil(log((long double)max)/log(16));
+    unsigned int offsetLen = static_cast<unsigned int>(ceil(log(static_cast<long double>(max))/log(16)));
     offsetLen += offsetLen % 4;
 
     for (auto it : diffData_)
