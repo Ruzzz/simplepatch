@@ -3,7 +3,7 @@ Changes
 
 ### Version 0.3.1 (2013-04-01)
 
-- Added: Option -resize
+- Added: Option -rewrite
 
 ### Version 0.3 (2013-03-21)
 
