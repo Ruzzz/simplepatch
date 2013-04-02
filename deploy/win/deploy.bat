@@ -7,13 +7,14 @@ call get_version.bat
 set ROOT_PATH=%~dp0..\..
 set ARC_NAME=simplepatch_v%VERSION%_win
 set ARC_PATH=%ARC_NAME%
+set CLEAN_EXE_PATCH=%~dp0clean_rich_signature
 
 :: Prepare files
 mkdir %ARC_PATH%
 copy /V %ROOT_PATH%\bin\sdiff.exe %ARC_PATH%\
 copy /V %ROOT_PATH%\bin\spatch.exe %ARC_PATH%\
-spatch  %ARC_PATH%\sdiff.exe clean_rich_signature -nobackup
-spatch  %ARC_PATH%\spatch.exe clean_rich_signature -nobackup
+spatch -nobackup %ARC_PATH%\sdiff.exe %CLEAN_EXE_PATCH%
+spatch -nobackup %ARC_PATH%\spatch.exe %CLEAN_EXE_PATCH%
 
 :: Pack
 erase *.7z

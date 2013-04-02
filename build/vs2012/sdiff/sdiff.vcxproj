@@ -14,6 +14,7 @@
     <ClCompile Include="..\..\..\src\Crc32.cpp" />
     <ClCompile Include="..\..\..\src\Patch.cpp" />
     <ClCompile Include="..\..\..\src\sdiff.cpp" />
+    <ClCompile Include="..\..\..\src\StringUtil.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\Crc32.h" />

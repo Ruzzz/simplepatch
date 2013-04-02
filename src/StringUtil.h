@@ -8,6 +8,11 @@
 #pragma once
 
 
+#include <vector>
+
+#include "defs.h"
+
+
 class StringUtil
 {
 public:
@@ -48,6 +53,28 @@ public:
     static void upperCaseInPlace(TString &s)
     {
         std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+    }
+
+#ifdef _WIN32
+    static bool wideToAnsiArray(std::vector<char> &result, const wchar_t *s, int size = -1);
+    /// Convert from wide string to vector of ANSI character, without '/0'
+#endif
+
+    static bool prepareAnsi(const tchar *s, std::string &result)
+    {
+#ifdef _UNICODE
+        std::vector<char> buffer;
+        if (StringUtil::wideToAnsiArray(buffer, s))
+        {
+            result.assign(buffer.begin(), buffer.end());
+            return true;
+        }
+        else
+            return false;
+#else
+        result.assign(s);
+        return true;
+#endif
     }
 
 private:

@@ -86,6 +86,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\src\Crc32.cpp" />
     <ClCompile Include="..\..\..\src\Patch.cpp" />
+    <ClCompile Include="..\..\..\src\StringUtil.cpp" />
     <ClCompile Include="..\..\..\test\test.cpp" />
     <ClCompile Include="..\..\..\3rd\gtest\gtest.cc" />
   </ItemGroup>

@@ -75,7 +75,9 @@ class Patcher
 {
 public:
     Patcher() : fileSize_(0), fileCrc32_(0) {}
+    bool isValid() const { return lastError_ == Error::OK; }
     const Error &getLastError() const { return lastError_; }
+
     bool apply(const tchar *targetFileName);
     bool save(const tchar *patchFileName);
     bool load(const tchar *patchFileName);

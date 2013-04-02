@@ -12,13 +12,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\Crc32.cpp" />
+    <ClCompile Include="..\..\..\src\SPatchOptions.cpp" />
     <ClCompile Include="..\..\..\src\Patch.cpp" />
     <ClCompile Include="..\..\..\src\spatch.cpp" />
+    <ClCompile Include="..\..\..\src\StringUtil.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\Crc32.h" />
     <ClInclude Include="..\..\..\src\defs.h" />
     <ClInclude Include="..\..\..\src\FileUtil.h" />
+    <ClInclude Include="..\..\..\src\SPatchOptions.h" />
     <ClInclude Include="..\..\..\src\Patch.h" />
     <ClInclude Include="..\..\..\src\StringUtil.h" />
   </ItemGroup>
