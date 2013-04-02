@@ -5,11 +5,12 @@ diff and patch command line utilities for binary files with the same size.
 
 ## Usage ##
 
-    sdiff oldfile newfile patchfile
-    spatch targetfile patchfile[.sdiff|.simplediff] [-nobackup|-rewrite]
+    sdiff old-file new-file patch-file
+    spatch [options] target-file patch-file[.sdiff|.simplediff]
 
-- nobackup - Don't create backup file <filename.original>.
-- rewrite - Rewrite backup file if exists.
+spatch options:
+
+- `-nobackup|-rewrite` - Don't create backup file `<filename.original>` or rewrite backup file if exists.
 
 ## Format of \*.sdiff (\*.simplediff) files ##
 
