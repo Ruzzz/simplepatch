@@ -4,10 +4,11 @@
 
 :: Initialize
 call get_version.bat
-set ROOT_PATH=%~dp0..\..
+set CURRENT_PATH="%~dp0"
+set ROOT_PATH=%CURRENT_PATH%..\..
 set ARC_NAME=simplepatch_v%VERSION%_win
 set ARC_PATH=%ARC_NAME%
-set CLEAN_EXE_PATCH=%~dp0clean_rich_signature
+set CLEAN_EXE_PATCH=%CURRENT_PATH%clean_rich_signature
 
 :: Prepare files
 mkdir %ARC_PATH%
