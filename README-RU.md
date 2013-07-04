@@ -44,4 +44,4 @@ Simple Patch
 
 ## Скачать ##
 
-[Исполняемые файлы для Windows 32bit](http://ge.tt/7Etqtra)
+[Исполняемые файлы](https://github.com/Ruzzz/simplepatch/releases)

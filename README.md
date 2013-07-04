@@ -44,4 +44,4 @@ Examples:
 
 ## Download ##
 
-[Win32 exe files](http://ge.tt/7Etqtra)
+[Releases](https://github.com/Ruzzz/simplepatch/releases)
