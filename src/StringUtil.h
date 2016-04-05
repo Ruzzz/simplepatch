@@ -20,8 +20,9 @@ public:
     {
 #ifdef _WIN32
         return isspace(static_cast<unsigned char>(c)) != 0;
-#endif
+#else
         return isspace(c) != 0;
+#endif
     }
 
     static bool isSpace(const wchar_t c)

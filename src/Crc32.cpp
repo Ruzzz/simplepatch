@@ -1,7 +1,7 @@
 //
 // Project: Simple Patch
 // Date:    2013-03-28
-// Author:  Ruzzz <ruzzzua[]gmail.com>
+// Author:  Ruslan Zaporojets <ruzzzua[]gmail.com>
 //
 
 

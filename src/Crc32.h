@@ -4,9 +4,7 @@
 // Author:  Ruzzz <ruzzzua[]gmail.com>
 //
 
-
 #pragma once
-
 
 class Crc32
 {
@@ -20,21 +18,19 @@ public:
         value_ = 0xFFFFFFFF;
     }
 
-    void compute(const void *data, const unsigned int size)
+    void compute(const void *ptr, size_t size)
     {
-        char *p = reinterpret_cast<char *>(const_cast<void *>(data));
-        unsigned int i = size;
-        for (; i--; ++p)
+        const uint8_t *p = static_cast<const uint8_t*>(ptr);
+        for (; size--; ++p)
             compute(*p);
     }
 
-    void compute(const char c)
+    void compute(const uint8_t b)
     {
-        unsigned char uc = c;
-        value_ = (value_ >> 8) ^ TABLE[(value_ ^ uc) & 0xFF];
+        value_ = (value_ >> 8) ^ TABLE[(value_ ^ b) & 0xFF];
     }
 
-    const unsigned int value() const
+    const uint32_t value() const
     {
         return ~value_;
     }
@@ -42,6 +38,6 @@ public:
     static bool calc(std::istream &f, unsigned int &resultCrc);
 
 private:
-    static const unsigned int TABLE[256];
-    unsigned int value_;
+    static const uint32_t TABLE[256];
+    uint32_t value_;
 };

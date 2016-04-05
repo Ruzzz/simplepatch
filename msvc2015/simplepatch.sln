@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sdiff", "sdiff\sdiff.vcxproj", "{40EE09A8-188A-47BA-9B39-32C7E132FD3A}"
+# Visual Studio 2013
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zsdiff", "zsdiff\zsdiff.vcxproj", "{40EE09A8-188A-47BA-9B39-32C7E132FD3A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "spatch", "spatch\spatch.vcxproj", "{DAD77D6A-FE47-4EF5-9C02-9380813092EC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zspatch", "zspatch\zspatch.vcxproj", "{DAD77D6A-FE47-4EF5-9C02-9380813092EC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcxproj", "{DC26A726-7214-456C-87F9-E227DFF21714}"
 EndProject

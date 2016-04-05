@@ -1,7 +1,7 @@
 //
 // Project: Simple Patch
 // Date:    2013-03-08
-// Author:  Ruzzz <ruzzzua[]gmail.com>
+// Author:  Ruslan Zaporojets <ruzzzua[]gmail.com>
 //
 
 
@@ -116,10 +116,10 @@ public:
     {
         if (updateLine())
         { 
-            std::string s;
-            ss >> s;
-            StringUtil::upperCaseInPlace(s);
-            if (s == key)
+            std::string k;
+            ss >> k;
+            StringUtil::upperCaseInPlace(k);
+            if (k == key)
             {
                 ss >> std::ws;
                 if (ss.eof())
@@ -218,7 +218,7 @@ const char *Patcher::SIGNATURE = "SIMPLEDIFF";
 const tchar *const Patcher::PATCH_FILE_EXTS[] = 
 {
     _T(""),
-    _T(".sdiff"),
+    _T(".zsdiff"),
     _T(".simplediff")
 };
 
@@ -338,7 +338,8 @@ bool Patcher::parse_(std::istream &patchFile)
 
             // work
             diffData_.clear();
-            while (!p.file->eof())
+            while (!p.file->eof() && !p.file->fail())
+
             {
                 if (!p.updateLine())
                     continue;  // skip empty strings

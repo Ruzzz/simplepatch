@@ -1,7 +1,7 @@
 //
 // Project: Simple Patch
 // Date:    2013-02-08
-// Author:  Ruzzz <ruzzzua[]gmail.com>
+// Author:  Ruslan Zaporojets <ruzzzua[]gmail.com>
 //
 
 
@@ -18,9 +18,9 @@
 
 const char USAGE[] =
 {
-    "Simple Diff v"VERSION" by Ruzzz\n"
+    "Simple Diff v" VERSION  " by Ruslan Zaporojets\n"
     "Create simple patch file.\n"
-    "Usage: sdiff old-file new-file patch-file\n"
+    "Usage: zsdiff old-file new-file patch-file\n"
     "\n"
     "Note: old-file and new-file must have the same size.\n"
 };

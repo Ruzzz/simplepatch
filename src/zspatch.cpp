@@ -1,7 +1,7 @@
 //
 // Project: Simple Patch
 // Date:    2013-02-08
-// Author:  Ruzzz <ruzzzua[]gmail.com>
+// Author:  Ruslan Zaporojets <ruzzzua[]gmail.com>
 //
 
 
@@ -25,9 +25,9 @@
 
 const char USAGE[] =
 {
-    "Simple Patch v"VERSION" by Ruzzz\n"
-    "Apply simple patch file to target file.\n"
-    "Usage: spatch [options] target-file patch-file[.sdiff|.simplediff]\n"
+    "Simple Patch v" VERSION " by Ruslan Zaporojets\n"
+    "Apply simple patch to target file.\n"
+    "Usage: zspatch [options] target-file patch-file[.zsdiff|.simplediff]\n"
     "\n"
     "Options:\n"
     "  -nobackup|-rewrite       - Don't create backup file <filename.original>\n"
