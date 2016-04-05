@@ -1,18 +1,18 @@
 Simple Patch
 ============
 
-diff and patch command line utilities for binary files with the same size.
+zsdiff and zspatch command line utilities for binary files with the same size.
 
 ## Usage ##
 
-    sdiff old-file new-file patch-file
-    spatch [options] target-file patch-file[.sdiff|.simplediff]
+    zsdiff old-file new-file patch-file
+    zspatch [options] target-file patch-file[.zsdiff|.simplediff]
 
 spatch options:
 
 - `-nobackup|-rewrite` - Don't create backup file `<filename.original>` or rewrite backup file if exists.
 
-## Format of \*.sdiff (\*.simplediff) files ##
+## Format of \*.zsdiff (\*.simplediff) files ##
 
 Text file, all numbers - hexadecimal:
 
