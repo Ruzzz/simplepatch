@@ -1,7 +1,8 @@
 @echo off
 if (%1) == () (
-  echo Edit this file: See 'echo OFFSET BYTE BYTE ..'
-  echo Usage: this_bat exe-file [exe-file ..]    
+  echo 1. Find RICH signature in your exe file, depend on compiler settings;
+  echo 2. Edit this.cmd: See 'echo OFFSET BYTE BYTE ..'
+  echo 3. Usage: this.cmd file.exe [file.exe ..]    
   exit /b 1
 )
 
